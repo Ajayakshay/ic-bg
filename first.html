@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link href="https://fonts.google.com/share?selection.family=Shadows+Into+Light">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Igloo</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* DROPDOWN */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: rgba(255, 255, 255, 0.2);
+  min-width: 160px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  z-index: 2000;
+backdrop-filter: blur(10px);
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
+font-family: 'Poppins', sans-serif;
+}
+
+.dropdown-content a:hover {
+  background: none;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* FIX NAVBAR ABOVE VIDEO */
+.navbar {
+  z-index: 1000;
+}
+
+/* FIX VIDEO CLICK ISSUE */
+.bg-video {
+  pointer-events: none;
+z-index: -1;
+}
+
+/* ✅ NEW SECTION BELOW VIDEO (ONLY ADDITION) */
+.after-video {
+  background: white;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.after-video img {
+  margin: 20px;
+  border-radius: 15px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+
+  <div class="nav-left">
+    <img src="logo2.png" alt="Igloo Logo" class="logo">
+
+    <!-- DROPDOWN -->
+    <div class="dropdown">
+      <a href="fl.html">FLAVOURS</a>
+      <div class="dropdown-content">
+        <a href="fl.html?type=chocolate">Chocolate</a>
+        <a href="fl.html?type=vanilla">Vanilla</a>
+        <a href="fl.html?type=strawberry">Strawberry</a>
+        <a href="fl.html?type=mango">Mango</a>
+      </div>
+    </div>
+
+    <a href="#">PRODUCTS</a>
+    <a href="#">LOCATE US</a>
+  </div>
+
+  <div class="nav-right">
+    <i class="fas fa-search"></i>
+    <i class="fas fa-user"></i>
+    <i class="fas fa-bag-shopping"></i>
+  </div>
+
+</nav>
+
+<!-- MAIN SECTION -->
+<section class="main-content">
+
+  <video autoplay muted loop class="bg-video">
+    <source src="bg3.mp4" type="video/mp4">
+  </video>
+
+  <div class="center-btn">
+    <a href="quiz.html" class="quiz-btn">Flavour Quiz</a>
+  </div>
+
+</section>
+
+<!-- ✅ NEW CONTENT BELOW (ONLY ADDITION) -->
+<section class="after-video">
+  <h2>Our Special Flavours 🍦</h2>
+
+  <img src="flavour1.jpg" width="250">
+  <img src="flavour2.jpg" width="250">
+  <img src="flavour3.jpg" width="250">
+
+</section>
+
+</body>
+</html>

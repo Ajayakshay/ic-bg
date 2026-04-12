@@ -1,0 +1,141 @@
+/* BODY */
+body {
+  margin: 0;
+  font-family: 'Shadows Into Light', cursive;
+}
+
+/* REMOVE SIDE SCROLL */
+html, body {
+  overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  padding: 0 50px;
+  background: transparent;
+  color: white;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  box-sizing: border-box;
+  z-index: 1000; /* ✅ FIX */
+}
+
+/* LEFT */
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-left a {
+  margin-right: 25px;
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  letter-spacing: 1px;
+  transition: 0.3s;
+  font-weight: bold;
+  position: relative;
+  top: 3px;
+}
+
+.nav-left a:hover {
+  transform: scale(1.08);
+}
+
+/* LOGO */
+.nav-left .logo {
+  height: 80px;
+  margin-right: 20px;
+  position: relative;
+  top: 20px;
+}
+
+/* QUIZ BUTTON */
+.center-btn .quiz-btn {
+  background-color: black;
+  color: white;
+  padding: 10px 18px;
+  border: 2px solid black;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+/* CENTER BUTTON ALIGNMENT */
+.center-btn {
+  position: absolute;
+  bottom: 120px;   /* controls button position */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* RIGHT ICONS */
+.nav-right i {
+  margin-left: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  color: black;
+  transition: 0.3s;
+  position: relative;
+  top: 3px;
+}
+
+.nav-right i:hover {
+  color: #6dd5ed;
+  transform: scale(1.2);
+}
+
+/* Start Quiz button style */
+#start-screen button {
+  background-color: #5c4033;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+}
+
+/* Rounded edges for quiz box */
+.quiz-container {
+  border-radius: 15px;
+}
+
+/* MAIN CONTENT (VIDEO SECTION) */
+.main-content {
+  position: relative;
+  height: 100vh;          /* ✅ FIXED (was 80vh) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  padding-top: 0;
+}
+
+/* BACKGROUND VIDEO */
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;  /* ✅ FIX (click works) */
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .nav-left {
+    display: none;
+  }
+
+  .nav-center img {
+    height: 40px;
+  }
+}

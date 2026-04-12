@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="style.css">
+<style>
+
+/* remove default gap */
+body {
+  margin: 0;
+}
+
+/* Navbar (unchanged) */
+.navbar {
+  background: #f8efd3;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  top: 20px;
+}
+
+.nav-left a {
+  color: black;
+}
+
+.nav-right i {
+  color: black;
+}
+
+/* IMAGE SECTION */
+.main-content {
+  position: relative;
+ margin-top: 40px;
+}
+
+/* FULL IMAGE */
+.main-content img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* TEXT ON IMAGE (RIGHT SIDE) */
+.quiz-container {
+  position: absolute;
+  top: 50%;
+  right: 150px;
+  transform: translateY(-50%);
+
+  background: none;
+  padding: 40px;
+  border-radius: 30px;
+  text-align: center;
+}
+
+/* BUTTON */
+button {
+  padding: 10px 20px;
+  border: none;
+  background: #6b4c3b;
+  color: white;
+  cursor: pointer;
+}
+
+</style>
+
+<meta charset="UTF-8">
+<title>Flavour Quiz - Igloo</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-left">
+    <img src="logo2.png" alt="Igloo Logo" class="logo">
+    <a href="#">FLAVOURS</a>
+    <a href="#">PRODUCTS</a>
+    <a href="#">LOCATE US</a>
+  </div>
+
+  <div class="nav-right">
+    <i class="fas fa-search"></i>
+    <i class="fas fa-user"></i>
+    <i class="fas fa-bag-shopping"></i>
+  </div>
+</nav>
+
+<!-- IMAGE + OVERLAY -->
+<section class="main-content">
+
+  <!-- IMAGE -->
+  <img src="flavor.jpg" alt="Ice Cream">
+
+  <!-- TEXT ON IMAGE -->
+  <div class="quiz-container">
+    <h2>Find your flavour match!</h2>
+
+    <div id="start-screen">
+      <button onclick="startQuiz()">Start Quiz</button>
+    </div>
+
+    <div id="quiz-screen" style="display:none;">
+      <p id="question"></p>
+      <div id="answers"></div>
+    </div>
+
+    <div id="result"></div>
+
+    <!-- ✅ ADDED BUTTONS -->
+    <div id="result-buttons" style="display:none; margin-top:20px;">
+      <button onclick="restartQuiz()">Restart Quiz</button>
+      <button onclick="goHome()">Home</button>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- JS -->
+<script>
+
+let questions = [
+  {
+    q: "What’s your vibe today?",
+    options: {
+      "Fun & Playful": "strawberry",
+      "Calm & Relaxed": "vanilla",
+      "Bold & Confident": "chocolate",
+      "Energetic & Wild": "mango"
+    }
+  },
+  {
+    q: "Pick a dessert",
+    options: {
+      "Brownie": "chocolate",
+      "Fruit bowl": "mango",
+      "Cake": "strawberry",
+      "Milkshake": "vanilla"
+    }
+  },
+  {
+    q: "Choose a color",
+    options: {
+      "Brown": "chocolate",
+      "White": "vanilla",
+      "Pink": "strawberry",
+      "Yellow": "mango"
+    }
+  },
+  {
+    q: "Pick a weekend activity",
+    options: {
+      "Watching movies": "chocolate",
+      "Reading a book": "vanilla",
+      "Hanging out with friends": "strawberry",
+      "Going on an adventure": "mango"
+    }
+  },
+  {
+    q: "What drink do you prefer?",
+    options: {
+      "Cold coffee": "chocolate",
+      "Milk": "vanilla",
+      "Strawberry shake": "strawberry",
+      "Mango juice": "mango"
+    }
+  }
+];
+
+let score = {
+  chocolate: 0,
+  vanilla: 0,
+  strawberry: 0,
+  mango: 0
+};
+
+let currentQ = 0;
+
+function startQuiz() {
+  document.getElementById("start-screen").style.display = "none";
+  document.getElementById("quiz-screen").style.display = "block";
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("result-buttons").style.display = "none";
+  currentQ = 0;
+
+  for (let key in score) {
+    score[key] = 0;
+  }
+
+  showQuestion();
+}
+
+function showQuestion() {
+  let q = questions[currentQ];
+  document.getElementById("question").innerText = q.q;
+
+  let answersHTML = "";
+
+  for (let key in q.options) {
+    answersHTML += `<button onclick="selectAnswer('${q.options[key]}')">${key}</button><br><br>`;
+  }
+
+  document.getElementById("answers").innerHTML = answersHTML;
+}
+
+function selectAnswer(type) {
+  score[type]++;
+  currentQ++;
+
+  if (currentQ < questions.length) {
+    showQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  document.getElementById("quiz-screen").style.display = "none";
+
+  let result = Object.keys(score).reduce((a, b) =>
+    score[a] > score[b] ? a : b
+  );
+
+  let text = "";
+
+  if(result === "chocolate"){
+    text = "🍫 You are CHOCOLATE! Bold and intense!";
+  }
+  else if(result === "vanilla"){
+    text = "🍦 You are Vanilla! Calm and classic!";
+  }
+  else if(result === "strawberry"){
+    text = "🍓 You are Strawberry! Fun and sweet!";
+  }
+  else {
+    text = "🥭 You are Mango! Energetic and vibrant!";
+  }
+
+  document.getElementById("result").innerHTML = "<h3>" + text + "</h3>";
+
+  // ✅ SHOW BUTTONS
+  document.getElementById("result-buttons").style.display = "block";
+}
+
+/* ✅ NEW FUNCTIONS */
+function restartQuiz() {
+  startQuiz();
+}
+
+function goHome() {
+  window.location.href = "first.html";
+}
+
+</script>
+
+</body>
+</html>

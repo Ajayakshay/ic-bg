@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flavour Page</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+}
+
+/* SAME NAVBAR */
+.navbar {
+  background: #f8efd3;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.nav-left a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: black;
+}
+
+/* dropdown (same as home) */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: white;
+  min-width: 160px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px;
+  color: black;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* content */
+.content {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SAME NAVBAR -->
+<div class="navbar">
+  <div class="nav-left">
+
+    <div class="dropdown">
+      <a href="#">FLAVOURS</a>
+      <div class="dropdown-content">
+        <a href="fl.html?type=chocolate">Chocolate</a>
+        <a href="fl.html?type=vanilla">Vanilla</a>
+        <a href="fl.html?type=strawberry">Strawberry</a>
+        <a href="fl.html?type=mango">Mango</a>
+      </div>
+    </div>
+
+    <a href="#">PRODUCTS</a>
+    <a href="#">LOCATE US</a>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content" id="flavourName"></div>
+
+<script>
+// get flavour from URL
+let params = new URLSearchParams(window.location.search);
+let flavour = params.get("type");
+
+// display it
+if (flavour) {
+  document.getElementById("flavourName").innerText =
+    flavour.toUpperCase() + " FLAVOUR";
+}
+</script>
+
+</body>
+</html>
