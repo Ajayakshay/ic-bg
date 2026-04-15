@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Flavours — Igloo</title>
+  <meta name="description" content="Search and discover artisanal ice cream flavours at Igloo. Filter by category, price, and more.">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #faf7f2;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ── */
+    .navbar {
+      background: #f8efd3;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-left .logo {
+      height: 55px;
+    }
+
+    .nav-left a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 1px;
+      transition: color 0.3s;
+    }
+
+    .nav-left a:hover {
+      color: #5c4033;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-right i {
+      font-size: 18px;
+      cursor: pointer;
+      color: #333;
+      transition: 0.3s;
+    }
+
+    .nav-right i:hover {
+      color: #5c4033;
+      transform: scale(1.15);
+    }
+
+    .nav-right a {
+      text-decoration: none;
+      color: #333;
+    }
+
+    /* ── SEARCH HERO ── */
+    .search-hero {
+      background: linear-gradient(135deg, #5c4033 0%, #8B6914 50%, #5c4033 100%);
+      padding: 60px 20px 50px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+      animation: shimmer 8s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+
+      0%,
+      100% {
+        transform: translateX(-20%) translateY(-20%);
+      }
+
+      50% {
+        transform: translateX(20%) translateY(20%);
+      }
+    }
+
+    .search-hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .search-hero p {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 16px;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── SEARCH BAR ── */
+    .search-bar-wrap {
+      max-width: 620px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .search-bar-wrap input {
+      width: 100%;
+      padding: 16px 55px 16px 22px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      outline: none;
+      transition: box-shadow 0.3s;
+    }
+
+    .search-bar-wrap input:focus {
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .search-bar-wrap .search-icon {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #5c4033;
+      font-size: 20px;
+    }
+
+    .search-bar-wrap .clear-search {
+      position: absolute;
+      right: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+      font-size: 16px;
+      cursor: pointer;
+      display: none;
+      transition: color 0.2s;
+    }
+
+    .search-bar-wrap .clear-search:hover {
+      color: #ff4d4d;
+    }
+
+    .search-bar-wrap .clear-search.visible {
+      display: block;
+    }
+
+    /* ── MAIN LAYOUT ── */
+    .search-layout {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      gap: 30px;
+    }
+
+    /* ── FILTERS SIDEBAR ── */
+    .filters-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+    }
+
+    .filter-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+      position: sticky;
+      top: 90px;
+    }
+
+    .filter-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-card h3 i {
+      color: #5c4033;
+    }
+
+    .filter-group {
+      margin-bottom: 22px;
+    }
+
+    .filter-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .filter-group select,
+    .filter-group input[type="range"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e0d8ce;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      background: #faf7f2;
+      outline: none;
+      transition: border-color 0.3s;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .filter-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235c4033' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 35px;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+      border-color: #5c4033;
+    }
+
+    .filter-group input[type="range"] {
+      padding: 0;
+      height: 6px;
+      border: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background: linear-gradient(to right, #5c4033 0%, #5c4033 50%, #e0d8ce 50%, #e0d8ce 100%);
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .filter-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #5c4033;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(92, 64, 51, 0.4);
+    }
+
+    .price-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    .price-value {
+      font-weight: 600;
+      color: #5c4033;
+      font-size: 14px;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 15px;
+    }
+
+    .filter-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #f8efd3;
+      color: #5c4033;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      animation: tagIn 0.3s ease;
+    }
+
+    @keyframes tagIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .filter-tag .remove-tag {
+      cursor: pointer;
+      font-weight: 700;
+      margin-left: 2px;
+      transition: color 0.2s;
+    }
+
+    .filter-tag .remove-tag:hover {
+      color: #ff4d4d;
+    }
+
+    .clear-filters-btn {
+      width: 100%;
+      padding: 12px;
+      background: none;
+      border: 2px solid #e0d8ce;
+      border-radius: 10px;
+      color: #888;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .clear-filters-btn:hover {
+      border-color: #ff4d4d;
+      color: #ff4d4d;
+      background: #fff5f5;
+    }
+
+    /* ── RESULTS AREA ── */
+    .results-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .results-count {
+      font-size: 14px;
+      color: #888;
+    }
+
+    .results-count strong {
+      color: #333;
+    }
+
+    .sort-select {
+      padding: 8px 30px 8px 12px;
+      border: 1px solid #e0d8ce;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      background: white;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235c4033' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+
+    /* ── RESULTS GRID ── */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 22px;
+    }
+
+    .result-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: cardIn 0.4s ease both;
+    }
+
+    .result-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-card img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .result-card:hover img {
+      transform: scale(1.05);
+    }
+
+    .result-card .card-img-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .result-card .card-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #5c4033;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      z-index: 1;
+    }
+
+    .result-card .card-body {
+      padding: 16px;
+    }
+
+    .result-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #333;
+    }
+
+    .result-card .card-desc {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .result-card .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .result-card .card-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #5c4033;
+    }
+
+    .result-card .card-add-btn {
+      background: #5c4033;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .result-card .card-add-btn:hover {
+      background: #3e2723;
+      transform: scale(1.05);
+    }
+
+    mark {
+      background: #f8efd3;
+      color: #5c4033;
+      padding: 1px 3px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    /* ── LOADING STATE ── */
+    .loading-overlay {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .loading-overlay.active {
+      display: block;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid #e0d8ce;
+      border-top-color: #5c4033;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-overlay p {
+      color: #888;
+      font-size: 15px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .empty-state.active {
+      display: block;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: #888;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state button {
+      background: #5c4033;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .empty-state button:hover {
+      background: #3e2723;
+    }
+
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 40px;
+      padding-bottom: 40px;
+    }
+
+    .pagination button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #e0d8ce;
+      background: white;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .pagination button:hover:not(.active):not(:disabled) {
+      border-color: #5c4033;
+      color: #5c4033;
+      background: #fdf8f0;
+    }
+
+    .pagination button.active {
+      background: #5c4033;
+      color: white;
+      border-color: #5c4033;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .pagination .page-arrow {
+      font-size: 16px;
+      width: 42px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .search-layout {
+        flex-direction: column;
+      }
+
+      .filters-sidebar {
+        width: 100%;
+      }
+
+      .filter-card {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .search-hero h1 {
+        font-size: 26px;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .results-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-left">
+      <a href="index.html">
+        <img src="https://github.com/Navina-07/ic-bg/blob/main/logo2.png?raw=true" alt="Igloo Logo" class="logo">
+      </a>
+      <a href="fl.html">FLAVOURS</a>
+      <a href="search.html" style="color:#5c4033;">SEARCH</a>
+      <a href="#" >LOCATE US</a>
+    </div>
+    <div class="nav-right">
+      <a href="search.html" aria-label="Search"><i class="fas fa-search"></i></a>
+      <a href="profile.html" aria-label="Profile"><i class="fas fa-user"></i></a>
+      <a href="fl.html" aria-label="Shopping bag"><i class="fas fa-shopping-bag"></i></a>
+    </div>
+  </nav>
+
+  <!-- SEARCH HERO -->
+  <section class="search-hero" role="search" aria-label="Search flavours">
+    <h1>Discover Your Flavour</h1>
+    <p>Search our handcrafted collection of artisanal ice cream</p>
+    <div class="search-bar-wrap">
+      <input type="text" id="search-input" placeholder="Try 'chocolate', 'mango', 'cheesecake'..."
+        autocomplete="off" aria-label="Search flavours" role="searchbox">
+      <span class="clear-search" id="clear-search" aria-label="Clear search" role="button" tabindex="0">&times;</span>
+      <i class="fas fa-search search-icon"></i>
+    </div>
+  </section>
+
+  <!-- ACTIVE FILTER TAGS -->
+  <div style="max-width:1200px; margin:15px auto 0; padding:0 20px;">
+    <div class="filter-tags" id="filter-tags" aria-live="polite"></div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="search-layout">
+
+    <!-- FILTERS SIDEBAR -->
+    <aside class="filters-sidebar" role="complementary" aria-label="Search filters">
+      <div class="filter-card">
+        <h3><i class="fas fa-sliders-h"></i> Filters</h3>
+
+        <div class="filter-group">
+          <label for="filter-category" id="lbl-category">Category</label>
+          <select id="filter-category" aria-labelledby="lbl-category">
+            <option value="">All Categories</option>
+            <option value="chocolate">Chocolate</option>
+            <option value="vanilla">Vanilla</option>
+            <option value="strawberry">Strawberry</option>
+            <option value="mango">Mango</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-price" id="lbl-price">Max Price</label>
+          <input type="range" id="filter-price" min="0" max="15" step="0.5" value="15"
+            aria-labelledby="lbl-price" aria-valuemin="0" aria-valuemax="15">
+          <div class="price-value" id="price-display">Up to $15.00</div>
+          <div class="price-labels">
+            <span>$0</span>
+            <span>$15</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-sort" id="lbl-sort">Sort By</label>
+          <select id="filter-sort" aria-labelledby="lbl-sort">
+            <option value="relevance">Relevance</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A–Z</option>
+            <option value="name-desc">Name: Z–A</option>
+            <option value="popular">Most Popular</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-dietary" id="lbl-dietary">Dietary</label>
+          <select id="filter-dietary" aria-labelledby="lbl-dietary">
+            <option value="">Any</option>
+            <option value="vegan">Vegan</option>
+            <option value="gluten-free">Gluten-Free</option>
+            <option value="nut-free">Nut-Free</option>
+          </select>
+        </div>
+
+        <button class="clear-filters-btn" id="clear-filters-btn" type="button">
+          <i class="fas fa-times"></i> Clear All Filters
+        </button>
+      </div>
+    </aside>
+
+    <!-- RESULTS AREA -->
+    <main class="results-area" role="main" aria-label="Search results">
+
+      <div class="results-header">
+        <div class="results-count" id="results-count" aria-live="polite">
+          Showing <strong>0</strong> results
+        </div>
+        <select class="sort-select" id="sort-quick" aria-label="Quick sort">
+          <option value="relevance">Sort: Relevance</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+          <option value="popular">Most Popular</option>
+        </select>
+      </div>
+
+      <!-- Loading -->
+      <div class="loading-overlay" id="loading-state" role="status" aria-label="Loading results">
+        <div class="spinner"></div>
+        <p>Searching our flavour vault...</p>
+      </div>
+
+      <!-- Empty -->
+      <div class="empty-state" id="empty-state" role="status" aria-label="No results found">
+        <div class="empty-icon">🍦</div>
+        <h3>No flavours found</h3>
+        <p>Try adjusting your search or filters</p>
+        <button id="empty-clear-btn" type="button">Clear Search & Filters</button>
+      </div>
+
+      <!-- Grid -->
+      <div class="results-grid" id="results-grid" aria-label="Flavour results"></div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination" role="navigation" aria-label="Results pagination"></div>
+    </main>
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════════
+       STATE MANAGEMENT (React-like patterns in vanilla JS)
+    ══════════════════════════════════════════════ */
+
+    // ── Simulated "props" — the data layer ──
+    const FLAVOUR_DATABASE = [
+      { id: 1, name: "Dark Chocolate Raspberry", category: "chocolate", price: 6.00, img: "https://github.com/Navina-07/ic-bg/blob/main/c1.jpg?raw=true", desc: "Rich dark chocolate swirled with tangy raspberry coulis", dietary: [], popular: 95 },
+      { id: 2, name: "Chocolate Peanut Butter", category: "chocolate", price: 6.00, img: "https://github.com/Navina-07/ic-bg/blob/main/c2.jpg?raw=true", desc: "Velvet chocolate meets roasted peanut butter ribbons", dietary: [], popular: 88 },
+      { id: 3, name: "White Chocolate Macadamia", category: "chocolate", price: 6.00, img: "https://github.com/Navina-07/ic-bg/blob/main/c3.jpg?raw=true", desc: "Creamy white chocolate with toasted macadamia crunch", dietary: [], popular: 78 },
+      { id: 4, name: "Madagascar Vanilla Bean", category: "vanilla", price: 5.50, img: "https://github.com/Navina-07/ic-bg/blob/main/v1.jpg?raw=true", desc: "Pure Madagascar vanilla with real bean specks", dietary: ["gluten-free"], popular: 98 },
+      { id: 5, name: "French Vanilla Chai", category: "vanilla", price: 5.50, img: "https://github.com/Navina-07/ic-bg/blob/main/v2.jpg?raw=true", desc: "Warm chai spices folded into classic French vanilla", dietary: ["gluten-free"], popular: 82 },
+      { id: 6, name: "Vanilla Caramel", category: "vanilla", price: 5.50, img: "https://github.com/Navina-07/ic-bg/blob/main/v3.jpg?raw=true", desc: "Buttery caramel swirl through silky vanilla base", dietary: ["gluten-free"], popular: 91 },
+      { id: 7, name: "Strawberry Cheesecake", category: "strawberry", price: 6.50, img: "https://github.com/Navina-07/ic-bg/blob/main/s1.jpg?raw=true", desc: "Graham crust chunks in strawberry cheesecake cream", dietary: [], popular: 93 },
+      { id: 8, name: "Strawberry Balsamic", category: "strawberry", price: 6.50, img: "https://github.com/Navina-07/ic-bg/blob/main/s2.jpg?raw=true", desc: "Artisan strawberry elevated with aged balsamic drizzle", dietary: ["vegan"], popular: 76 },
+      { id: 9, name: "Strawberry & Cream", category: "strawberry", price: 6.50, img: "https://github.com/Navina-07/ic-bg/blob/main/s3.jpg?raw=true", desc: "Classic strawberries folded into fresh whipped cream", dietary: ["nut-free", "gluten-free"], popular: 89 },
+      { id: 10, name: "Mango Chili Lime", category: "mango", price: 6.00, img: "https://github.com/Navina-07/ic-bg/blob/main/m1.jpg?raw=true", desc: "Sweet alphonso mango with chili heat and lime zing", dietary: ["vegan", "gluten-free"], popular: 94 },
+      { id: 11, name: "Coconut Mango", category: "mango", price: 6.00, img: "https://github.com/Navina-07/ic-bg/blob/main/m2.jpg?raw=true", desc: "Tropical coconut cream blended with ripe mango purée", dietary: ["vegan", "nut-free"], popular: 85 },
+      { id: 12, name: "Mango Lassi", category: "mango", price: 6.00, img: "https://github.com/Navina-07/ic-bg/blob/main/m3.jpg?raw=true", desc: "Indian-inspired mango yogurt with cardamom essence", dietary: ["gluten-free"], popular: 87 },
+    ];
+
+    const ITEMS_PER_PAGE = 6;
+
+    // ── State (like React useState) ──
+    let state = {
+      searchQuery: '',
+      filters: {
+        category: '',
+        maxPrice: 15,
+        sort: 'relevance',
+        dietary: ''
+      },
+      searchResults: [],
+      isLoading: false,
+      totalResults: 0,
+      currentPage: 1,
+      totalPages: 1
+    };
+
+    // ── setState equivalent ──
+    function setState(updates) {
+      const prev = { ...state };
+      Object.assign(state, updates);
+      render(prev);
+    }
+
+    /* ══════════════════════════════════════════════
+       CALLBACKS (prop-like functions)
+    ══════════════════════════════════════════════ */
+
+    // onSearch(query) — debounced
+    function onSearch(query) {
+      setState({ isLoading: true, searchQuery: query, currentPage: 1 });
+
+      // Simulate async search delay
+      setTimeout(() => {
+        const results = performSearch(query, state.filters);
+        setState({
+          searchResults: results,
+          totalResults: results.length,
+          totalPages: Math.ceil(results.length / ITEMS_PER_PAGE) || 1,
+          isLoading: false
+        });
+      }, 400);
+    }
+
+    // onFilter(filters) — triggered when any filter changes
+    function onFilter(newFilters) {
+      const mergedFilters = { ...state.filters, ...newFilters };
+      setState({ isLoading: true, filters: mergedFilters, currentPage: 1 });
+
+      setTimeout(() => {
+        const results = performSearch(state.searchQuery, mergedFilters);
+        setState({
+          searchResults: results,
+          totalResults: results.length,
+          totalPages: Math.ceil(results.length / ITEMS_PER_PAGE) || 1,
+          isLoading: false
+        });
+      }, 300);
+    }
+
+    // onPageChange(page)
+    function onPageChange(page) {
+      if (page < 1 || page > state.totalPages || page === state.currentPage) return;
+      setState({ currentPage: page });
+      document.querySelector('.results-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /* ══════════════════════════════════════════════
+       SEARCH ENGINE
+    ══════════════════════════════════════════════ */
+
+    function performSearch(query, filters) {
+      let results = [...FLAVOUR_DATABASE];
+
+      // Text search
+      if (query.trim()) {
+        const q = query.toLowerCase().trim();
+        results = results.filter(item =>
+          item.name.toLowerCase().includes(q) ||
+          item.desc.toLowerCase().includes(q) ||
+          item.category.toLowerCase().includes(q)
+        );
+      }
+
+      // Category filter
+      if (filters.category) {
+        results = results.filter(item => item.category === filters.category);
+      }
+
+      // Price filter
+      if (filters.maxPrice < 15) {
+        results = results.filter(item => item.price <= filters.maxPrice);
+      }
+
+      // Dietary filter
+      if (filters.dietary) {
+        results = results.filter(item => item.dietary.includes(filters.dietary));
+      }
+
+      // Sort
+      switch (filters.sort) {
+        case 'price-asc':
+          results.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-desc':
+          results.sort((a, b) => b.price - a.price);
+          break;
+        case 'name-asc':
+          results.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case 'name-desc':
+          results.sort((a, b) => b.name.localeCompare(a.name));
+          break;
+        case 'popular':
+          results.sort((a, b) => b.popular - a.popular);
+          break;
+      }
+
+      return results;
+    }
+
+    /* ══════════════════════════════════════════════
+       DEBOUNCE (useCallback equivalent)
+    ══════════════════════════════════════════════ */
+
+    function debounce(fn, delay) {
+      let timer;
+      return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
+    const debouncedSearch = debounce((query) => {
+      onSearch(query);
+    }, 350);
+
+    /* ══════════════════════════════════════════════
+       HIGHLIGHT SEARCH TERMS
+    ══════════════════════════════════════════════ */
+
+    function highlightText(text, query) {
+      if (!query.trim()) return text;
+      const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escaped})`, 'gi');
+      return text.replace(regex, '<mark>$1</mark>');
+    }
+
+    /* ══════════════════════════════════════════════
+       RENDER (like React's render / return JSX)
+    ══════════════════════════════════════════════ */
+
+    function render(prevState) {
+      const { searchResults, isLoading, totalResults, currentPage, totalPages, searchQuery, filters } = state;
+
+      // Loading
+      const loadingEl = document.getElementById('loading-state');
+      const emptyEl = document.getElementById('empty-state');
+      const gridEl = document.getElementById('results-grid');
+      const paginationEl = document.getElementById('pagination');
+
+      if (isLoading) {
+        loadingEl.classList.add('active');
+        emptyEl.classList.remove('active');
+        gridEl.style.display = 'none';
+        paginationEl.style.display = 'none';
+        return;
+      }
+
+      loadingEl.classList.remove('active');
+
+      if (totalResults === 0 && (searchQuery || filters.category || filters.dietary || filters.maxPrice < 15)) {
+        emptyEl.classList.add('active');
+        gridEl.style.display = 'none';
+        paginationEl.style.display = 'none';
+      } else {
+        emptyEl.classList.remove('active');
+        gridEl.style.display = 'grid';
+
+        // Paginate
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        const pageItems = searchResults.slice(start, start + ITEMS_PER_PAGE);
+
+        gridEl.innerHTML = pageItems.map((item, i) => `
+          <div class="result-card" style="animation-delay: ${i * 0.06}s" role="article" aria-label="${item.name}">
+            <div class="card-img-wrap">
+              <span class="card-badge">${item.category.charAt(0).toUpperCase() + item.category.slice(1)}</span>
+              <img src="${item.img}" alt="${item.name}" loading="lazy">
+            </div>
+            <div class="card-body">
+              <h3>${highlightText(item.name, searchQuery)}</h3>
+              <p class="card-desc">${highlightText(item.desc, searchQuery)}</p>
+              <div class="card-footer">
+                <span class="card-price">$${item.price.toFixed(2)}</span>
+                <button class="card-add-btn" onclick="addToCartFromSearch('${item.name.replace(/'/g, "\\'")}', ${item.price}, '${item.img}')" aria-label="Add ${item.name} to bag">
+                  Add to Bag
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Pagination
+        if (totalPages > 1) {
+          paginationEl.style.display = 'flex';
+          let paginationHTML = `
+            <button class="page-arrow" onclick="onPageChange(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} aria-label="Previous page">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          `;
+
+          for (let i = 1; i <= totalPages; i++) {
+            if (totalPages <= 7 || i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+              paginationHTML += `<button onclick="onPageChange(${i})" class="${i === currentPage ? 'active' : ''}" aria-label="Page ${i}" ${i === currentPage ? 'aria-current="page"' : ''}>${i}</button>`;
+            } else if (Math.abs(i - currentPage) === 2) {
+              paginationHTML += `<button disabled aria-hidden="true">…</button>`;
+            }
+          }
+
+          paginationHTML += `
+            <button class="page-arrow" onclick="onPageChange(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} aria-label="Next page">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          `;
+          paginationEl.innerHTML = paginationHTML;
+        } else {
+          paginationEl.style.display = 'none';
+        }
+      }
+
+      // Results count
+      document.getElementById('results-count').innerHTML =
+        `Showing <strong>${totalResults}</strong> result${totalResults !== 1 ? 's' : ''}` +
+        (searchQuery ? ` for "<strong>${searchQuery}</strong>"` : '');
+
+      // Active filter tags
+      renderFilterTags();
+
+      // Sync filter controls (don't re-trigger change events)
+      syncFilterControls();
+    }
+
+    function renderFilterTags() {
+      const tagsEl = document.getElementById('filter-tags');
+      let tags = [];
+
+      if (state.searchQuery) {
+        tags.push({ label: `"${state.searchQuery}"`, key: 'query' });
+      }
+      if (state.filters.category) {
+        tags.push({ label: state.filters.category.charAt(0).toUpperCase() + state.filters.category.slice(1), key: 'category' });
+      }
+      if (state.filters.maxPrice < 15) {
+        tags.push({ label: `Under $${state.filters.maxPrice.toFixed(2)}`, key: 'price' });
+      }
+      if (state.filters.dietary) {
+        tags.push({ label: state.filters.dietary.charAt(0).toUpperCase() + state.filters.dietary.slice(1), key: 'dietary' });
+      }
+      if (state.filters.sort !== 'relevance') {
+        const sortLabels = { 'price-asc': 'Price ↑', 'price-desc': 'Price ↓', 'name-asc': 'A–Z', 'name-desc': 'Z–A', 'popular': 'Popular' };
+        tags.push({ label: sortLabels[state.filters.sort] || state.filters.sort, key: 'sort' });
+      }
+
+      tagsEl.innerHTML = tags.map(t => `
+        <span class="filter-tag">
+          ${t.label}
+          <span class="remove-tag" onclick="removeFilter('${t.key}')" role="button" tabindex="0" aria-label="Remove ${t.label} filter">×</span>
+        </span>
+      `).join('');
+    }
+
+    function removeFilter(key) {
+      if (key === 'query') {
+        document.getElementById('search-input').value = '';
+        document.getElementById('clear-search').classList.remove('visible');
+        onSearch('');
+      } else if (key === 'category') {
+        onFilter({ category: '' });
+      } else if (key === 'price') {
+        onFilter({ maxPrice: 15 });
+      } else if (key === 'dietary') {
+        onFilter({ dietary: '' });
+      } else if (key === 'sort') {
+        onFilter({ sort: 'relevance' });
+      }
+    }
+
+    function syncFilterControls() {
+      const f = state.filters;
+      const catEl = document.getElementById('filter-category');
+      const priceEl = document.getElementById('filter-price');
+      const sortEl = document.getElementById('filter-sort');
+      const dietaryEl = document.getElementById('filter-dietary');
+      const sortQuickEl = document.getElementById('sort-quick');
+
+      if (catEl.value !== f.category) catEl.value = f.category;
+      if (parseFloat(priceEl.value) !== f.maxPrice) priceEl.value = f.maxPrice;
+      if (sortEl.value !== f.sort) sortEl.value = f.sort;
+      if (dietaryEl.value !== f.dietary) dietaryEl.value = f.dietary;
+      if (sortQuickEl.value !== f.sort) sortQuickEl.value = f.sort;
+
+      document.getElementById('price-display').textContent =
+        f.maxPrice >= 15 ? 'Up to $15.00' : `Up to $${parseFloat(f.maxPrice).toFixed(2)}`;
+
+      // Update range gradient
+      const pct = ((f.maxPrice - 0) / (15 - 0)) * 100;
+      priceEl.style.background = `linear-gradient(to right, #5c4033 0%, #5c4033 ${pct}%, #e0d8ce ${pct}%, #e0d8ce 100%)`;
+    }
+
+    /* ══════════════════════════════════════════════
+       CART INTEGRATION
+    ══════════════════════════════════════════════ */
+
+    function addToCartFromSearch(name, price, imgSrc) {
+      let cart = [];
+      try { cart = JSON.parse(localStorage.getItem('iceCreamCart')) || []; } catch (e) { }
+
+      const existing = cart.find(item => item.flavour === name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ flavour: name, quantity: 1, price: price, imgSrc: imgSrc });
+      }
+      localStorage.setItem('iceCreamCart', JSON.stringify(cart));
+
+      // Flash feedback on button
+      event.target.textContent = '✓ Added!';
+      event.target.style.background = '#2e7d32';
+      setTimeout(() => {
+        event.target.textContent = 'Add to Bag';
+        event.target.style.background = '#5c4033';
+      }, 1200);
+    }
+
+    /* ══════════════════════════════════════════════
+       EVENT BINDINGS (useEffect equivalent)
+    ══════════════════════════════════════════════ */
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // Search input with debounce
+      const searchInput = document.getElementById('search-input');
+      const clearBtn = document.getElementById('clear-search');
+
+      searchInput.addEventListener('input', (e) => {
+        const q = e.target.value;
+        clearBtn.classList.toggle('visible', q.length > 0);
+        debouncedSearch(q);
+      });
+
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.classList.remove('visible');
+        onSearch('');
+        searchInput.focus();
+      });
+
+      // Filter controls
+      document.getElementById('filter-category').addEventListener('change', (e) => {
+        onFilter({ category: e.target.value });
+      });
+
+      document.getElementById('filter-price').addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        document.getElementById('price-display').textContent =
+          val >= 15 ? 'Up to $15.00' : `Up to $${val.toFixed(2)}`;
+        const pct = ((val - 0) / (15 - 0)) * 100;
+        e.target.style.background = `linear-gradient(to right, #5c4033 0%, #5c4033 ${pct}%, #e0d8ce ${pct}%, #e0d8ce 100%)`;
+      });
+
+      document.getElementById('filter-price').addEventListener('change', (e) => {
+        onFilter({ maxPrice: parseFloat(e.target.value) });
+      });
+
+      document.getElementById('filter-sort').addEventListener('change', (e) => {
+        onFilter({ sort: e.target.value });
+      });
+
+      document.getElementById('sort-quick').addEventListener('change', (e) => {
+        onFilter({ sort: e.target.value });
+      });
+
+      document.getElementById('filter-dietary').addEventListener('change', (e) => {
+        onFilter({ dietary: e.target.value });
+      });
+
+      // Clear all filters
+      document.getElementById('clear-filters-btn').addEventListener('click', clearAllFilters);
+      document.getElementById('empty-clear-btn').addEventListener('click', clearAllFilters);
+
+      // Check URL params
+      const params = new URLSearchParams(window.location.search);
+      const q = params.get('q');
+      const cat = params.get('category');
+
+      if (q) {
+        searchInput.value = q;
+        clearBtn.classList.add('visible');
+      }
+      if (cat) {
+        state.filters.category = cat;
+      }
+
+      // Initial search
+      onSearch(q || '');
+    });
+
+    function clearAllFilters() {
+      document.getElementById('search-input').value = '';
+      document.getElementById('clear-search').classList.remove('visible');
+      state.searchQuery = '';
+      onFilter({ category: '', maxPrice: 15, sort: 'relevance', dietary: '' });
+    }
+  </script>
+</body>
+
+</html>
